@@ -19,8 +19,13 @@ CNN_AUTO_EN_TEST_OUT_DIR = './out/test/cnn_autoen'
 MLP_AUTO_EN_MODEL_PATH = './out/model/mlp_autoen'
 MLP_AUTO_EN_TRAIN_OUT_DIR = './out/train/mlp_autoen'
 MLP_AUTO_EN_TEST_OUT_DIR = './out/test/mlp_autoen'
+
+DENOISER_MODEL_PATH = './out/model/denoiser'
+DENOISER_TRAIN_OUT_DIR = './out/train/denoiser'
+DENOISER_TEST_OUT_DIR = './out/test/denoiser'
 # from below choice make any one True
 RUN_CNN_AUTOEN = False
 RUN_UPSCALE_AUTOEN = True
 RUN_MLP_AUTOEN = False
 SAVE_CHECKPOINT = 1
+NOISE_FACTOR = 0.4

@@ -20,3 +20,13 @@ def save_images(image, output_dir, epoch, image_name='input'):
     save_image(
         image, os.path.join(output_dir,
                             f"{image_name}_image_epoch{epoch}.png"))
+
+
+def save_images_denoiser(image, output_dir, epoch, image_name='input'):
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    image = image.cpu().data
+    image = image.view(1, 28, 28)
+    save_image(
+        image, os.path.join(output_dir,
+                            f"{image_name}_image_epoch{epoch}.png"))

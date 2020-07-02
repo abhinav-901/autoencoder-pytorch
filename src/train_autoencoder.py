@@ -4,7 +4,7 @@ import torch
 import constants
 import os
 from torch import optim
-from cnn_autoencoder import CnnAutoencoder
+from cnn_autoencoder import CnnAutoencoder, ImprvdCnnAutoencoder
 from mlp_autoencoder import MLPAutoencoder
 from helper import save_images
 
@@ -13,19 +13,19 @@ def main(device, train_data_loader, test_data_loader):
     # select which autoencoder to train
     # available autoencoders [MLP, CNN]
     is_mlp = False
-    is_cnn = False
-    if constants.RUN_CNN_AUTOEN:
-        autoencoder = CnnAutoencoder()
-        train_output_dir = constants.CNN_AUTO_EN_TRAIN_OUT_DIR
-        test_output_dir = constants.CNN_AUTO_EN_TEST_OUT_DIR
-        model_path = constants.CNN_AUTO_EN_MODEL_PATH
-        is_cnn = True
-    elif constants.RUN_MLP_AUTOEN:
+    if constants.RUN_MLP_AUTOEN:
         is_mlp = True
         autoencoder = MLPAutoencoder()
         train_output_dir = constants.MLP_AUTO_EN_TRAIN_OUT_DIR
         test_output_dir = constants.MLP_AUTO_EN_TEST_OUT_DIR
         model_path = constants.MLP_AUTO_EN_MODEL_PATH
+    else:
+        autoencoder = ImprvdCnnAutoencoder()
+        if constants.RUN_CNN_AUTOEN:
+            autoencoder = CnnAutoencoder()
+        train_output_dir = constants.CNN_AUTO_EN_TRAIN_OUT_DIR
+        test_output_dir = constants.CNN_AUTO_EN_TEST_OUT_DIR
+        model_path = constants.CNN_AUTO_EN_MODEL_PATH
 
     # Migrate all operations on GPU if available else on CPU
     autoencoder.to(device)
@@ -37,12 +37,12 @@ def main(device, train_data_loader, test_data_loader):
     for epoch in range(1, constants.NUM_EPOCHS + 1):
         for data in train_data_loader:
             images, _ = data
+            optimizer.zero_grad()
             images = images.to(device)
             if is_mlp:
                 images = images.view(-1, 28 * 28)
             output = autoencoder(images)
             loss = criterian(output, images.float())
-            optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             train_loss += loss.item() * images.size(0)
